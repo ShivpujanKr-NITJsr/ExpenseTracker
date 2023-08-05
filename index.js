@@ -29,6 +29,30 @@ function saveToLocalStorage(event){
     // showUserOnScreen(obj);
 }
 
+window.addEventListener("DOMContentLoaded",()=>{
+
+    axios.get("https://crudcrud.com/api/42d183f5000b488d9318d34970bf9a7f/appointmentData")
+        .then((res)=>{
+
+            console.log(res)
+
+            for(var i=0; i<res.data.length;i++){
+                showUserOnScreen(res.data[i])
+            }
+        })
+        .catch(err=>console.log(err))
+    // const localStorageObj=localStorage;
+
+    // const localStoragekeys=Object.keys(localStorage)
+
+    // for(var i=0; i<localStoragekeys.length;i++){
+    //     const key =localStoragekeys[i];
+    //     const userDetailsString =localStorageObj[key]
+    //     const userDetailsObj=JSON.parse(userDetailsString);
+    //     showUserOnScreen(userDetailsObj);
+    // }
+})
+
 function showUserOnScreen(obj){
     const parentElemen=document.getElementById('listofitems');
     const children=document.createElement('li');
@@ -40,6 +64,7 @@ function showUserOnScreen(obj){
     deletebtn.value='Deleteexpense'
 
     deletebtn.onclick=()=>{
+        
         localStorage.removeItem(obj.description);
         parentElemen.removeChild(children)
     }
