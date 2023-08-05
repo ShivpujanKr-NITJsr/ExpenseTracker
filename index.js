@@ -4,11 +4,13 @@ function saveToLocalStorage(event){
 
     const description=event.target.description.value;
     const category=event.target.category.value;
+    const time=new Date().getMilliseconds();
 
     const obj={
         price,
         description,
-        category
+        category,
+        time
     }
 
 
@@ -63,8 +65,23 @@ function showUserOnScreen(obj){
     deletebtn.type='button'
     deletebtn.value='Deleteexpense'
 
+
     deletebtn.onclick=()=>{
         
+        const tim=obj.time;
+
+        axios.get('https://crudcrud.com/api/42d183f5000b488d9318d34970bf9a7f\appointmentData')
+            .then((res)=>{
+                res.forEach(element => {
+                    if(element.time==tim){
+                        const id=element._id;
+                        const ur=`https://crudcrud.com/api/42d183f5000b488d9318d34970bf9a7f\appointmentData`+'\'+id+';
+                        axios.delete(ur).then(()=>console.log("deleted object of id ",id))
+                        .catch(err=>console.log(err));
+                        
+                    }
+                });
+            })
         localStorage.removeItem(obj.description);
         parentElemen.removeChild(children)
     }
