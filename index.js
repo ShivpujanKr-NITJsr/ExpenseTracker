@@ -1,3 +1,5 @@
+var editing = null
+
 function saveToLocalStorage(event){
     event.preventDefault();
     const price=event.target.name.value;
@@ -12,9 +14,8 @@ function saveToLocalStorage(event){
         category,
         time
     }
-
-
-    axios.post("https://crudcrud.com/api/42d183f5000b488d9318d34970bf9a7f/appointmentData",obj)
+      if (editing === null) {
+        axios.post("https://crudcrud.com/api/f3b7901754874ecc9dc7c922c076d90a/appointmentData",obj)
         .then((response)=>{
             showUserOnScreen(response.data);
             // console.log(response);
@@ -24,6 +25,24 @@ function saveToLocalStorage(event){
             console.log(err)
 
         })
+    } else {
+        const ur='https://crudcrud.com/api/f3b7901754874ecc9dc7c922c076d90a/appointmentData'+'/'+editing;
+        axios.put(ur,obj)
+        .then((response)=>{
+            showUserOnScreen(response.data);
+            // console.log(response.data);
+        })
+        .catch(err=>{
+            document.body.innerHTML=err;
+            console.log(err)
+
+        })
+        editing = null;
+        
+    }
+    
+
+    
             
             
 
@@ -33,7 +52,7 @@ function saveToLocalStorage(event){
 
 window.addEventListener("DOMContentLoaded",()=>{
 
-    axios.get("https://crudcrud.com/api/42d183f5000b488d9318d34970bf9a7f/appointmentData")
+    axios.get("https://crudcrud.com/api/f3b7901754874ecc9dc7c922c076d90a/appointmentData")
         .then((res)=>{
 
             console.log(res)
@@ -70,18 +89,26 @@ function showUserOnScreen(obj){
         
         const tim=obj.time;
 
-        axios.get('https://crudcrud.com/api/42d183f5000b488d9318d34970bf9a7f\appointmentData')
-            .then((res)=>{
-                res.forEach(element => {
-                    if(element.time==tim){
-                        const id=element._id;
-                        const ur=`https://crudcrud.com/api/42d183f5000b488d9318d34970bf9a7f\appointmentData`+'\'+id+';
-                        axios.delete(ur).then(()=>console.log("deleted object of id ",id))
-                        .catch(err=>console.log(err));
+        // axios.get('https://crudcrud.com/api/6ca6076d525f4757a50d7c0ba57abc44/appointmentData')
+        //     .then((res)=>{
+        //         console.log(res)
+        //         res.data.forEach(element => {
+        //             console.log(tim,element.time)
+        //             if(element.time==tim){
+        //                 const id=element._id;
+        //                 // console.log(id);
+        //                 const ur=`https://crudcrud.com/api/6ca6076d525f4757a50d7c0ba57abc44/appointmentData`+'/'+id
+        //                 axios.delete(ur).then(()=>console.log("deleted object of id ",id))
+        //                 .catch(err=>console.log(err));
                         
-                    }
-                });
-            })
+        //             }
+        //         });
+        //     })
+        // console.log(obj._id);
+
+        axios.delete(`https://crudcrud.com/api/f3b7901754874ecc9dc7c922c076d90a/appointmentData/${obj._id}`)
+            .then(res=>(console.log('done')))
+            .catch(err=>console.log(err));
         localStorage.removeItem(obj.description);
         parentElemen.removeChild(children)
     }
@@ -96,8 +123,28 @@ function showUserOnScreen(obj){
         document.getElementById('price').value=obj.price
         document.getElementById('description').value=obj.description
         document.getElementById('category').value=obj.category
+        editing = obj._id;
+        
     }
     children.appendChild(deletebtn)
     children.appendChild(editbtn)
     parentElemen.appendChild(children)
 }
+
+
+
+// function saveToLOcalStorage(e) {
+
+
+
+
+
+// function showOnScreen(obj) {
+
+
+//   editBtn.onCLick = (e) => {
+
+
+//     
+//   }
+// }
